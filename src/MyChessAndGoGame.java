@@ -1,12 +1,13 @@
-import javax.imageio.ImageIO;
+import org.junit.jupiter.api.Test;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.Set;
 
 /**
  * @Author: z
@@ -16,15 +17,36 @@ import java.util.*;
 //alt+7 查看当前类中所有方法
 
 class Game{//一盘棋类游戏
+
     public static BoardPaint startGo(){
         BoardPaint cheseBoard = new BoardPaint("go");
         return cheseBoard;
-    };
+    }
+    @Test
+    public void startGoTest(){
+        startGo();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static BoardPaint startChess(){
         BoardPaint goBoard = new BoardPaint("chess");
         return goBoard;
-    };
+    }
+    @Test
+    public void startChessTest(){
+        startChess();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
+
 class Player{//“玩家”
     String name;
     int color;
@@ -47,6 +69,7 @@ class ChessPlayer extends  Player{
         super(color);
         this.board = ChessBoard;
     }
+
     ChessPlayer(int color,String name,ChessBoard ChessBoard) {
         super(color);
         this.board = ChessBoard;
@@ -62,6 +85,7 @@ class ChessPlayer extends  Player{
         }
         return null;
     }
+
     public void playerPiecesInit(ChessBoard ChessBoard){
         HashMap<String, String> nameAndAddressArrays = ChessPosition.getNameAndAddressMap();
         if(color==1){
@@ -268,12 +292,7 @@ class ChessPosition extends Position{
         }
         return null;
     }
-    public static ArrayList<ChessPlayer> getPlayers (){
-        return players;
-    }
-    public static void setPlayers (ArrayList<ChessPlayer> playersOut){
-        players = playersOut ;
-    }
+
 }
 class Action{//“下棋动作”
     String actionKind;
@@ -305,6 +324,7 @@ class ChessAction extends Action{
         borad = ChessBoard;
     }
     //功能2
+
     public ArrayList<ChessPlayer> initPlayer(ChessBoard ChessBoard,int[] colors,String[] names){//功能2
         ArrayList<ChessPlayer> players = new ArrayList<>();
         ChessPlayer player1 = new ChessPlayer(colors[0],names[0],ChessBoard);
@@ -316,6 +336,7 @@ class ChessAction extends Action{
         players.add(player2 );
         return players;
     }
+
     //功能3 //给定“棋手、一颗棋子、指定位置的横坐标、指定位置的纵坐标”作为输入参数，将该棋手的该颗棋子放置在棋盘上
     public int put(ChessPlayer player,String pieceName,int x,int y){
 
@@ -340,6 +361,7 @@ class ChessAction extends Action{
         }
         return 1;
     }
+
     //功能4 //移动棋子（针对国际象棋）：给定“棋手、初始位置和目的位置的横纵坐标”，将处于初始位置的棋子移动到目的位置。
     public int move(ChessPlayer player,int startX,int startY,int endX,int endY){
         int[][][] positionArrays = ChessPosition.getPositionArrays();
@@ -439,7 +461,7 @@ class ChessAction extends Action{
         int[][][] positionArrays = ChessPosition.getPositionArrays();
         if(positionArrays[x][y][1]==0){
             System.out.println("该位置空闲");
-            return 0;
+            return 1;
         }else {
             //System.out.println("num->"+positionArrays[x][y][1]);
             HashMap<Integer, String> num2Name = ChessPosition.getnumAndName();
@@ -447,13 +469,13 @@ class ChessAction extends Action{
             String name = num2Name.get(positionArrays[x][y][1]);
                 if(positionArrays[x][y][1]>0){
                     System.out.println(" 该位置为"+players.get(0).name+"的 "+name);
-                    return 0;
+                    return 1;
                 }else if(positionArrays[x][y][1]<0){
                     System.out.println(" 该位置为"+players.get(1).name+"的 "+name);
-                    return 0;
+                    return 1;
                 }
             }
-        return 1;
+        return 0;
         }
     //功能8 计算两个玩家分别在棋盘上的棋子总数
     public void sumBoth(ArrayList<ChessPlayer> players){
@@ -483,6 +505,7 @@ class  BoardPaint extends Frame{//棋盘绘制
    final int width = 660;
    ChessBoard board;
    GoBoard goBoard;
+
 
      BoardPaint(String str){//输入指令
         if(str.equals("chess")){
@@ -524,6 +547,7 @@ class  BoardPaint extends Frame{//棋盘绘制
     }
 
 }
+
 
 class ChessBoard extends Board {//国际象棋棋盘
     //国际象棋棋盘绘制
@@ -650,6 +674,7 @@ class ChessBoard extends Board {//国际象棋棋盘
 //        this.remove(bishop);
     }
 
+
     public void paint(Graphics g)//会自动执行
     {
        // System.out.println("drewboard");
@@ -737,7 +762,8 @@ class ChessBoard extends Board {//国际象棋棋盘
 }
 
 class WordDescribe{
-    public static void printMenu(int flag, Player player) {
+
+    public  static void printMenu(int flag, Player player) {
         System.out.println();
         System.out.println("第"+(flag+1)+"个玩家"+player.name+"，请输入你想要执行的操作:");
         System.out.println("1->将尚未在棋盘上的一颗棋子放在棋盘上的指定位置");
@@ -748,6 +774,12 @@ class WordDescribe{
         System.out.println("6->跳过");
         System.out.println("end->游戏结束");
     }
+    @Test
+    public void printMenuTest(){
+        printMenu(1, new Player("test1"));
+    }
+
+
     public static void _1printXYTips(int[] xY,Scanner in){
         while (true){
             try {
@@ -762,6 +794,12 @@ class WordDescribe{
             }
         }
     }
+    @Test
+    public void _1printXYTipsTest(){
+        Scanner in = new Scanner(System.in);
+        _1printXYTips(new int[2],in);
+    }
+
     public static void _2And3(int[] startXY,int[] endXY ,Scanner in  ){
         String[] numsStr = null;
         System.out.println("请输入棋子的初始位置，依次输入横坐标与纵坐标，用空格分开");
@@ -791,22 +829,32 @@ class WordDescribe{
             }
         }
     }
-    public static void _4(int x,int y ,Scanner in){
+
+    public static void _4(int[] xY ,Scanner in){
         System.out.println("请输入你要查询的位置，依次输入横坐标与纵坐标，用空格分开");
 
         String[] numsStr = in.nextLine().split(" ");
         try {
-            x = Integer.parseInt(numsStr[0]);
-            y = Integer.parseInt(numsStr[1]);
+            xY[0] = Integer.parseInt(numsStr[0]);
+            xY[1] = Integer.parseInt(numsStr[1]);
         }catch (Exception e){
             System.out.println("输入位置格式有误！！");
         }
     }
-    public  static  void printSkip(Player player,int flag,ArrayList<ArrayList<String>> playerOperation){
+    public static void printSkip(Player player,int flag,ArrayList<ArrayList<String>> playerOperation){
         System.out.println(player.name+"选择跳过！");
         String  tempAc = player.name+" 选择了跳过";
         playerOperation.get(flag).add(tempAc );
     }
+
+    @Test
+    public void printSkipTest(){
+        ArrayList<ArrayList<String>> test = new ArrayList<>();
+        test.add(new ArrayList<String>() );
+        printSkip(new Player("test1"),0,test);
+    }
+
+
     public static void printHistoryRecord(Scanner in, ArrayList<ArrayList<String>> playerOperation) {
         System.out.println("是否查看走棋记录？请输入 y/n");
         String choose = in.nextLine();
@@ -977,6 +1025,7 @@ class GoAction extends Action{
         goBorad = goBoard;
     }
     //功能2 //初始化选手
+
     public ArrayList<GoPlayer> initPlayer(GoBoard goBoard,int[] colors,String[] names){//功能2
         ArrayList<GoPlayer> players = new ArrayList<>();
         GoPlayer player1 = new GoPlayer(colors[0],names[0],goBoard);
@@ -1098,19 +1147,17 @@ class GoAction extends Action{
         int[][] positionArrays = GoPosition.getPositionArrays();
         if(positionArrays[x][y]==0){
             System.out.println("该位置空闲");
-            return 0;
+            return 1;
         }else {
-            HashMap<Integer, String> num2Name = ChessPosition.getnumAndName();
-            String name = num2Name.get(positionArrays[x][y]);
             if(positionArrays[x][y]>0){
-                System.out.println(" 该位置为"+players.get(0).name+"的 "+name);
-                return 0;
+                System.out.println(" 该位置为"+players.get(0).name+"的BlackPiece ");
+                return 1;
             }else if(positionArrays[x][y]<0){
-                System.out.println(" 该位置为"+players.get(1).name+"的 "+name);
-                return 0;
+                System.out.println(" 该位置为"+players.get(1).name+"的WhitePiece ");
+                return 1;
             }
         }
-        return 1;
+        return 0;
     }
     //功能8 计算两个玩家分别在棋盘上的棋子总数
     public void sumBoth(ArrayList<GoPlayer> players){
@@ -1194,7 +1241,9 @@ public class MyChessAndGoGame {
     //使用 Java OOP 实现一个简单的棋类模拟软件。为“一盘棋类游戏”、“玩家”、“棋盘”、“棋子”、“棋盘上的位置”、“下棋动作”设计 ADT（类或接口），
     // 命名分别为 Game、Player、Board、Piece、Position、Action。如
     //果针对不同的棋类游戏需要从这些类派生子类或者实现接口，请自行进行设计
+
     public static void main(String[] args) {
+        while (true){
         Scanner in = new Scanner (System.in);
 //        System.out.println(in.nextLine());
         //画棋盘
@@ -1236,6 +1285,9 @@ public class MyChessAndGoGame {
                         HashMap<String, String> nameAndAddress = ChessPosition.getNameAndAddressMap();
                         while (true){
                             System.out.println("请输入你想放置的棋子名称");//和位置");
+                            System.out.println("黑棋：Black_Pawn,Black_Rock,Black_Knight,Black_Bishop,Black_Queen,Black_King");
+                            System.out.println("白棋：White_Pawn,White_Rock,White_Knight,White_Bishop,White_Queen,White_King");
+
                             pieceName = in.nextLine();
                             if(nameAndAddress.get(pieceName)==null){
                                 System.out.println("棋子名称不合法！");
@@ -1321,6 +1373,7 @@ public class MyChessAndGoGame {
 
             }
             WordDescribe.printHistoryRecord(in, playerOperation);
+            break;
             //System.out.println("sss");
             // chessInit.initPiece(60,60);
             // System.out.println(Arrays.deepToString(ChessPosition.getPositionArrays()));
@@ -1408,13 +1461,22 @@ public class MyChessAndGoGame {
                         flag = 1-flag;
                     }
                 }else if(act.equals("4")){
-                    int x=0,y=0;
-                    WordDescribe._4(x,y , in);
-                    if(action.query(x, y, players)==1){
-                        String  tempAc = player.name+"查询了 "+x+","+y+" 处位置的占用情况";
-                        playerOperation.get(flag).add(tempAc );
-                        break;
-                    }else {
+                    int flag4 = 0;
+                    System.out.println("请输入你要查询的位置，依次输入横坐标与纵坐标，用空格分开");
+                    int[] xY= new int[2];
+                    String[] numsStr = in.nextLine().split(" ");
+                    try {
+                        xY[0] = Integer.parseInt(numsStr[0]);
+                        xY[1] = Integer.parseInt(numsStr[1]);
+                        flag4 = action.query(xY[0], xY[1],players);
+                        if(flag4==1){
+                            String  tempAc = player.name+"查询了 "+xY[0]+","+xY[1]+" 处位置的占用情况";
+                            playerOperation.get(flag).add(tempAc );
+                        }
+                    }catch (Exception e){
+                        System.out.println("输入位置格式有误！！");
+                    }
+                    if(flag4==0){
                         flag = 1-flag;
                     }
                 }else if(act.equals("5")){
@@ -1431,17 +1493,11 @@ public class MyChessAndGoGame {
                 flag = 1-flag;
             }
             WordDescribe.printHistoryRecord(in, playerOperation);
+            break;
+        }else {
+            System.out.println("输入错误，请重新输入");
         }
-
-
-
-
-
-
-
     }
-
-
-
+    }
 
 }
